@@ -1,0 +1,5 @@
+{
+  "name": "sentiment_analysis",
+  "region": "ap-south-1",
+  "main": "stacks/index.js"
+}
