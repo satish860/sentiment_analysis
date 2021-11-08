@@ -9,6 +9,8 @@ namespace Api
 {
     public class PresignedHandler
     {
+        private const int Duration = 12;
+
         public APIGatewayHttpApiV2ProxyResponse Handler(APIGatewayHttpApiV2ProxyRequest request)
         {
             var bucketName = Environment.GetEnvironmentVariable("BUCKET");
@@ -26,7 +28,7 @@ namespace Api
                     }
                 };
             }
-            var url = urlBuilder.GetPreSignedURL(request.QueryStringParameters["mail"], 5);
+            var url = urlBuilder.GetPreSignedURL(request.QueryStringParameters["mail"], Duration);
             return new APIGatewayHttpApiV2ProxyResponse
             {
                 StatusCode = (int)HttpStatusCode.OK,

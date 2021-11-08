@@ -2,8 +2,6 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Api
 {
@@ -33,7 +31,8 @@ namespace Api
             {
                 BucketName = bucketName,
                 Key = objectKey,
-                Expires = DateTime.UtcNow.AddHours(duration)
+                Expires = DateTime.UtcNow.AddHours(duration),
+                Verb = HttpVerb.PUT,
             };
             var uri = amazonS3Client.GetPreSignedURL(request);
             return new Uri(uri);
