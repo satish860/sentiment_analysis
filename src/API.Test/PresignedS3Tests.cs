@@ -12,9 +12,8 @@ namespace API.Test
         [Fact]
         public void Should_be_able_to_Generate_Presigned_url()
         {
-            PresignedGenerator presignedGenerator= new PresignedGenerator();
-            var amazons3Client = new AmazonS3Client(Amazon.RegionEndpoint.APSouth1);
-            var uri = presignedGenerator.GenerateUri(amazons3Client, 30, "upload1234567890", Guid.NewGuid().ToString());
+            PresignedUrlBuilder builder = new PresignedUrlBuilder("upload1234567890",Amazon.RegionEndpoint.APSouth1);
+            var uri = builder.GetPreSignedURL(Guid.NewGuid().ToString(),30);
             Assert.NotNull(uri);
         }
     }
