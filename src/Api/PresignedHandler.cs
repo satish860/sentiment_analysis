@@ -16,7 +16,7 @@ namespace Api
             var bucketName = Environment.GetEnvironmentVariable("BUCKET");
             var region = Environment.GetEnvironmentVariable("REGION");
             PresignedUrlBuilder urlBuilder = new PresignedUrlBuilder(bucketName, RegionEndpoint.GetBySystemName(region));
-            if(!request.QueryStringParameters.ContainsKey("mail"))
+            if (!request.QueryStringParameters.ContainsKey("mail"))
             {
                 return new APIGatewayHttpApiV2ProxyResponse
                 {
@@ -28,7 +28,10 @@ namespace Api
                     }
                 };
             }
-            var url = urlBuilder.GetPreSignedURL(request.QueryStringParameters["mail"], Duration);
+            // Hash the Mail ID used to generate the presigned URL.
+            var mailId = request.QueryStringParameters["mail"];
+            var hash = Hash(mailId);
+            var url = urlBuilder.GetPreSignedURL(hash, Duration);
             return new APIGatewayHttpApiV2ProxyResponse
             {
                 StatusCode = (int)HttpStatusCode.OK,
@@ -37,5 +40,19 @@ namespace Api
             };
         }
 
+        private string Hash(string mailId)
+        {
+            var md5 = System.Security.Cryptography.MD5.Create();
+            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(mailId.Trim().ToLower());
+            byte[] hash = md5.ComputeHash(inputBytes);
+
+            // Create lower-case hex string
+            var sb = new System.Text.StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("x2"));
+            }
+            return sb.ToString();
+        }
     }
 }
